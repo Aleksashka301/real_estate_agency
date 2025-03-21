@@ -50,3 +50,8 @@ class Flat(models.Model):
 
     def __str__(self):
         return f'{self.town}, {self.address} ({self.price}р.)'
+
+    def save(self, *args, **kwargs):
+        if self.construction_year >= 2015 and self.new_building is None:
+            self.new_building = True
+        super().save(*args, **kwargs)
