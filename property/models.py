@@ -6,7 +6,10 @@ from django.contrib.auth.models import User
 class Flat(models.Model):
     owner = models.CharField('ФИО владельца', max_length=200)
     owners_phonenumber = models.CharField('Номер владельца', max_length=20)
-    new_building = models.BooleanField(default=None, null=True, blank=True)
+    new_building = models.BooleanField(
+        default=None,
+        null=True, blank=True,
+        verbose_name='Квартира находится в новостройке:',)
     created_at = models.DateTimeField(
         'Когда создано объявление',
         default=timezone.now,
@@ -48,6 +51,7 @@ class Flat(models.Model):
         null=True,
         blank=True,
         db_index=True)
+    like = models.ManyToManyField(User, related_name='liked_flats', verbose_name='Кто поставил like:')
 
     def __str__(self):
         return f'{self.town}, {self.address} ({self.price}р.)'
