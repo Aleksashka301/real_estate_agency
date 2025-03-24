@@ -4,8 +4,15 @@ from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+class Owner(models.Model):
+    owner_name = models.CharField('ФИО владельца', max_length=200)
+    owner_phonenumber = models.CharField('Номер владельца', default='', max_length=20)
+    owner_phone = PhoneNumberField(region='RU', null=True, blank=True, verbose_name='Нормализованный номер владельца:')
+    flats = models.ManyToManyField('Flat', related_name='owners', verbose_name="Квартиры в собственности")
+
+
 class Flat(models.Model):
-    owner = models.CharField('ФИО владельца', max_length=200)
+    owner = models.ForeignKey(Owner, on_delete=models.CASCADE, related_name='owned_flats', null=True, blank=True)
     owners_phonenumber = models.CharField('Номер владельца', default='', max_length=20)
     owner_pure_phone = PhoneNumberField(region='RU',
                                         null=True,
@@ -57,7 +64,7 @@ class Flat(models.Model):
         null=True,
         blank=True,
         db_index=True)
-    like = models.ManyToManyField(User, related_name='liked_flats', verbose_name='Кто поставил like:', blank=True)
+    likes = models.ManyToManyField(User, related_name='liked_flats', verbose_name='Кто поставил like:', blank=True)
 
     def __str__(self):
         return f'{self.town}, {self.address} ({self.price}р.)'
