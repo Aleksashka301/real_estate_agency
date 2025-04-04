@@ -4,6 +4,16 @@ from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+class Owner(models.Model):
+    full_name = models.CharField('ФИО владельца', max_length=200)
+    phone_number = models.CharField('Номер владельца', max_length=20)
+    normalized_phone = PhoneNumberField('Нормализованный номер владельца', region='RU', blank=True, null=True)
+    flats = models.ManyToManyField('Flat', verbose_name='Квартиры в собственности', related_name='owners')
+
+    def __str__(self):
+        return self.full_name
+
+
 class Flat(models.Model):
     owner = models.CharField('ФИО владельца', max_length=200)
     owner_pure_phone = PhoneNumberField(region='RU', blank=True, null=True, verbose_name='Нормализованный номер владельца:')
