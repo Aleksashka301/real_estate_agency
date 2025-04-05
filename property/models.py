@@ -15,9 +15,6 @@ class Owner(models.Model):
 
 
 class Flat(models.Model):
-    owner = models.CharField('ФИО владельца', max_length=200)
-    owner_pure_phone = PhoneNumberField(region='RU', blank=True, null=True, verbose_name='Нормализованный номер владельца:')
-    owners_phonenumber = models.CharField('Номер владельца', max_length=20)
     new_building = models.BooleanField('Новостройка:', null=True, blank=True, default=None)
     created_at = models.DateTimeField(
         'Когда создано объявление',
@@ -76,4 +73,3 @@ class Complaint(models.Model):
 
     def __str__(self):
         return f'Жалоба от {self.user} на квартиру {self.flat}'
-
