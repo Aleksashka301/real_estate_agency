@@ -6,16 +6,20 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class Owner(models.Model):
     full_name = models.CharField('ФИО владельца', max_length=200)
-    phone_number = models.CharField('Номер владельца', max_length=20)
     normalized_phone = PhoneNumberField('Нормализованный номер владельца', region='RU', blank=True, null=True)
-    flats = models.ManyToManyField('Flat', verbose_name='Квартиры в собственности', related_name='owners')
+    flats = models.ManyToManyField(
+        'Flat',
+        verbose_name='Квартиры в собственности',
+        related_name='owners',
+        blank=True,
+    )
 
     def __str__(self):
         return self.full_name
 
 
 class Flat(models.Model):
-    new_building = models.BooleanField('Новостройка:', null=True, blank=True, default=None)
+    new_building = models.BooleanField('Новостройка:', null=True, blank=True, default=None, db_index=True)
     created_at = models.DateTimeField(
         'Когда создано объявление',
         default=timezone.now,
@@ -67,8 +71,13 @@ class Flat(models.Model):
 
 
 class Complaint(models.Model):
-    user = models.ForeignKey(User, verbose_name='Кто жаловался', on_delete=models.CASCADE)
-    flat = models.ForeignKey('Flat', verbose_name='Квартира, на которую пожаловались', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='Кто жаловался', on_delete=models.CASCADE, related_name='complainants')
+    flat = models.ForeignKey(
+        'Flat',
+        verbose_name='Квартира, на которую пожаловались',
+        on_delete=models.CASCADE,
+        related_name='flats_complaints',
+    )
     text = models.TextField('Текст жалобы')
 
     def __str__(self):
