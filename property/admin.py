@@ -3,8 +3,8 @@ from .models import Flat, Complaint, Owner
 
 
 class OwnerAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'phone_number', 'normalized_phone')
-    search_fields = ('full_name', 'phone_number')
+    list_display = ('full_name', 'normalized_phone')
+    search_fields = ('full_name',)
     raw_id_fields = ('flats',)
 
 
